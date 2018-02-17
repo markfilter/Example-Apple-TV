@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NetworkUtilsRESTDelegate {
     
     // Mark: - Outlets and Variables
     public let TAG: String = "SecondViewController.TAG"
@@ -16,6 +16,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet var imageViewIcon: UIImageView!
     @IBOutlet var labelTitle: UILabel!
     @IBOutlet var labelForecast: UILabel!
+    var selectedRow : Int = 0
     
     
     var forecastData : [(title: String, forecast: String, icon: String)] = [(title: String, forecast: String, icon: String)]()
@@ -32,11 +33,6 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    
-    override func viewDidAppear(_ animated: Bool) {
-        updateTableView()
     }
     
     
@@ -61,66 +57,34 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     // Mark: - TableView Delegate Callback Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let row = indexPath.row
-        self.loadImage(at: row)
+        selectedRow = indexPath.row
+        self.loadImage(at: selectedRow)
     }
     
     // Mark: - Custom Methods
-    
-    func updateTableView() {
-        
-    }
     
     
     func loadImage(at row: Int) {
         let forecastImageUrl = forecastData[row].icon
         Log.i(TAG: TAG, message: forecastImageUrl )
         
-            if var url = URL.init(string: forecastImageUrl) {
-                
-                
-                if url.scheme == "http" {
-                    Log.i(TAG: TAG, message: "url.scheme = \(url.scheme ?? "no scheme")" )
-                    Log.i(TAG: TAG, message: "url.host = \(url.host ?? "no host")" )
-                    Log.i(TAG: TAG, message: "url.relativePath = \(url.relativePath)" )
-                    let secureURLString : String = "https://" + url.host! + "/" + url.relativePath
-                    url = URL.init(string: secureURLString)!
-                }
-                
-                
-                
-                let getData = URLSession.shared.dataTask(with: url, completionHandler: { (opt_data, opt_response, opt_error) in
-                    
-                    if let error = opt_error {
-                        Log.d(TAG: self.TAG, message: error.localizedDescription)
-                        return
-                    }
-                    guard let httpResponse = opt_response as? HTTPURLResponse,
-                        httpResponse.statusCode == 200,
-                        let validData = opt_data
-                        else {
-                            Log.d(TAG: self.TAG, message: "Data was invalid")
-                            return
-                            
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.imageViewIcon.image = UIImage.init(data: validData)
-                        self.labelTitle.text = self.forecastData[row].title
-                        self.labelForecast.text = self.forecastData[row].forecast
-                    }
-                    
-                })
-                getData.resume()
+            if let url = URL.init(string: forecastImageUrl) {
+                NetworkUtils.fetchImageFrom(url: url, delegate: self)
             }
             else {
                 Log.d(TAG: self.TAG, message: "Error creating ImageView Icon Url in viewDidLoad()")
                 Log.d(TAG: self.TAG, message: "\(forecastImageUrl )")
             }
-            
-        
     }
 
+    
+    func fetchImageComplete(image: UIImage, requestedUrl: URL) {
+        DispatchQueue.main.async {
+            self.imageViewIcon.image = image
+            self.labelTitle.text = self.forecastData[self.selectedRow].title
+            self.labelForecast.text = self.forecastData[self.selectedRow].forecast
+        }
+    }
 
 }
 

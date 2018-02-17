@@ -20,46 +20,43 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet var labelWeather : UILabel!
     @IBOutlet var textFieldStateToSearch : UITextField!
     var state : String = ""
+    var city : String = ""
+    var requestedURL : URL? = nil
     var cities : [String] = []
     var weatherImageUrl : String = ""
     var forecastData : [(title: String, forecast: String, icon: String)] = [(title: String, forecast: String, icon: String)]()
-//    var reachability: Reachability? = Reachability.networkReachabilityForInternetConnection()
     
     
     // Mark: - View Controller Life Cycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Setup
+        // Set Titles
         title = "Cities"
         if let tabBarController = self.tabBarController {
             tabBarController.viewControllers![1].title = "Forecast Details"
         }
+        
+        // Set Delegates
         tableView.delegate = self
         tableView.dataSource = self
+        if let tabBarController = self.tabBarController {
+            tabBarController.delegate = self
+        }
+        
+        // Clear Unpopulated UI Elements
         clearUILabels()
-        cities.removeAll()
-        tableView.reloadData()
         
-        
-        
-//        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityDidChange(_:)), name: NSNotification.Name(rawValue: ReachabilityDidChangeNotificationName), object: nil)
-//        _ = reachability?.startNotifier()
-        
-        
+        // Initialize with the state of Florida
         state = "FL"
         textFieldStateToSearch.text = "FL"
         fetchCitiesInFlorida(state: "FL")
         
-        if let tabBarController = self.tabBarController {
-            tabBarController.delegate = self
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        // Verify Network Connection
         NetworkUtils.checkConnection(viewController: self, testValue: false)
     }
-    
-
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -89,6 +86,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // Mark: - TableView Delegate Callback Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = indexPath.row
+        self.city = cities[row]
         self.getWeatherData(state: state, city: cities[row])
     }
     
@@ -102,79 +100,23 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     func fetchCitiesInFlorida(state: String) {
+        requestedURL = URL.init(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state).json")
+        if let url = requestedURL {
+            NetworkUtils.fetchJSONFrom(requestUrl: url, delegate: self)
+        }
         
-        if let url = URL(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state).json") {
-            let getData = URLSession.shared.dataTask(with: url) {
-                (opt_data, opt_response, opt_error) in
-                if let error = opt_error {
-                    Log.d(TAG: self.TAG, message: error.localizedDescription)
-                    return
-                }
-                guard let httpResponse = opt_response as? HTTPURLResponse,
-                    httpResponse.statusCode == 200,
-                    let validData = opt_data
-                    else { print("JSON Object Creation Failed"); return }
-                do {
-                    
-                    if let jsonObj = try JSONSerialization.jsonObject(with: validData, options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any] {
-                        
-                        DispatchQueue.main.async {
-                            self.loadTableViewWithCities(cityData: jsonObj)
-                        }
-                        
-                    }
-                    else {
-                        Log.d(TAG: self.TAG, message: "error creating jsonObj")
-                    }
-                    
-                }
-                catch { print(error.localizedDescription) }
-                
-            }
-            getData.resume()
-        }
-        else {
-            Log.d(TAG: TAG, message: "Error creating state url in method: fetchCitiesInFlorid(state: String)")
-        }
     }
     
     
     func getWeatherData(state: String, city: String) {
         Log.i(TAG: TAG, message: "City = \(city), \(state)")
+        
         if let cityString: String = city.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-            if let url = URL(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state)/\(cityString).json") {
-                
-                let getData = URLSession.shared.dataTask(with: url) {
-                    (opt_data, opt_response, opt_error) in
-                    if let error = opt_error {
-                        Log.d(TAG: self.TAG, message: error.localizedDescription)
-                        return
-                    }
-                    
-                    guard let httpResponse = opt_response as? HTTPURLResponse,
-                        httpResponse.statusCode == 200,
-                        let validData = opt_data
-                        else { print("JSON Object Creation Failed"); return }
-                    do {
-                        
-                        if let jsonObj = try JSONSerialization.jsonObject(with: validData, options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any] {
-                            
-                            DispatchQueue.main.async {
-                                self.updateUI(weatherData: jsonObj, city: city, state: state)
-                            }
-                            
-                        }
-                        else {
-                            Log.d(TAG: self.TAG, message: "error creating jsonObj")
-                        }
-
-                    }
-                    catch { print(error.localizedDescription) }
-                    
-                }
-                getData.resume()
+            Log.i(TAG: TAG, message: "cityString = " + cityString)
+            requestedURL = URL.init(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state)/\(cityString).json")
+            if let requestedURL = requestedURL {
+                NetworkUtils.fetchJSONFrom(requestUrl: requestedURL, delegate: self)
             }
-            
         }
         
     }
@@ -271,3 +213,24 @@ extension FirstViewController : UITextFieldDelegate {
     }
 }
 
+extension FirstViewController : NetworkUtilsRESTDelegate {
+    
+    func fetchJSONComplete(json: [String : Any], requestUrl: URL) {
+        
+        let urlSaveCity : String = self.city.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!
+        
+        DispatchQueue.main.async {
+            switch requestUrl {
+            case URL.init(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(self.state).json")!:
+                self.loadTableViewWithCities(cityData: json)
+            case URL.init(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(self.state)/\(urlSaveCity).json")!:
+                self.updateUI(weatherData: json, city: self.city, state: self.state)
+            default:
+                break
+            }
+        }
+        
+    }
+    
+    
+}

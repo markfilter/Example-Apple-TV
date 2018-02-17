@@ -2,7 +2,13 @@
   "images" : [
     {
       "idiom" : "tv",
+      "filename" : "weather-mate-shadow.png",
       "scale" : "1x"
+    },
+    {
+      "idiom" : "tv",
+      "filename" : "weather-mate-shadow@2x.png",
+      "scale" : "2x"
     }
   ],
   "info" : {
