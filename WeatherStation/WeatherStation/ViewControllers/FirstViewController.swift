@@ -16,7 +16,8 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet var labelCityName: UILabel!
     @IBOutlet var labelTemp: UILabel!
     @IBOutlet var labelWeather: UILabel!
-    let state = "FL"
+    @IBOutlet var textFieldStateToSearch: UITextField!
+    var state = ""
     var cities : [String] = []
     
     
@@ -166,6 +167,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
+    
     func updateUI(weatherData : [String: Any], city: String, state: String) {
             
         if let outerForecastData = weatherData["forecast"] as? [String : Any] {
@@ -199,6 +201,21 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         }
         
+    }
+}
+
+extension FirstViewController : UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        Log.i(TAG: TAG, message: "textFieldShouldReturn")
+        if textFieldStateToSearch.text != nil {
+            state = textFieldStateToSearch.text!
+            fetchCitiesInFlorida(state: state)
+        }
+        return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextFieldDidEndEditingReason) {
+        Log.i(TAG: TAG, message: "textFieldDidEndEditing")
     }
 }
 
