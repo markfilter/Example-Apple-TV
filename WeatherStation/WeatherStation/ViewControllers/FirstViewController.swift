@@ -13,6 +13,8 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // Mark: - Outlets & Variables
     public let TAG: String = "FirstViewController.TAG"
     @IBOutlet var tableView : UITableView!
+    @IBOutlet var labelStaticDay: UILabel!
+    @IBOutlet var labelStaticWeather: UILabel!
     @IBOutlet var labelCityName : UILabel!
     @IBOutlet var labelTemp : UILabel!
     @IBOutlet var labelWeather : UILabel!
@@ -92,6 +94,8 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     // Mark: - Custom Methods
     func clearUILabels() {
+        labelStaticDay.alpha = 0.0
+        labelStaticWeather.alpha = 0.0
         labelCityName.text = ""
         labelWeather.text = ""
         labelTemp.text = ""
@@ -202,7 +206,8 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     
     func updateUI(weatherData : [String: Any], city: String, state: String) {
-            
+        labelStaticDay.alpha = 1.0
+        labelStaticWeather.alpha = 1.0
         if let outerForecastData = weatherData["forecast"] as? [String : Any] {
             
             if let txt_forecast = outerForecastData["txt_forecast"] as? [String : Any] {
