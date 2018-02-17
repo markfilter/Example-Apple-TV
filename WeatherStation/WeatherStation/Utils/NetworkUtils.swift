@@ -18,7 +18,7 @@ class NetworkUtils {
     /**
      Checks network connectivity by making a request to the domain's server. Handles alerting the user to connection issues.
      - Parameters:
-     - viewController: The calling ViewController.
+       - viewController: The calling ViewController.
      - Author: Mark Filter
      */
     internal static func checkConnection(viewController: UIViewController) {
@@ -69,9 +69,9 @@ class NetworkUtils {
     /**
      Displays an error message in an AlertController.
      - Parameters:
-     - viewController: The ViewController presenting the AlertController.
-     - title: The title of the message
-     - errorMessage: The message to display to the user that defines the error.
+       - viewController: The ViewController presenting the AlertController.
+       - title: The title of the message
+       - errorMessage: The message to display to the user that defines the error.
      - Author: Mark Filter
      */
     internal static func displayErrorMessage(viewController: UIViewController, title: String, errorMessage: String) {
@@ -84,9 +84,10 @@ class NetworkUtils {
     
     /**
      Fetches JSON from the requested URL and returns the JSON via the delegate method.
+     
      - Parameters:
-     - requestUrl: The URL of the request.
-     - delegate: The context registered for receiving callbacks.
+       - requestUrl: The URL of the request.
+       - delegate: The context registered for receiving callbacks.
      - Author: Mark Filter
      */
     internal static func fetchJSONFrom(requestUrl: URL, delegate: NetworkUtilsRESTDelegate) {
@@ -122,8 +123,8 @@ class NetworkUtils {
     /**
      Fetches Image data from the requested URL and returns the UIImage via the delegate method.
      - Parameters:
-     - requestUrl: The URL of the request.
-     - delegate: The context registered for receiving callbacks.
+       - requestUrl: The URL of the request.
+       - delegate: The context registered for receiving callbacks.
      - Author: Mark Filter
      */
     internal static func fetchImageFrom(url: URL, delegate: NetworkUtilsRESTDelegate) {
@@ -172,8 +173,8 @@ class NetworkUtils {
     /**
      Returns a dictionary object of serialized JSON data of type [String: Any].
      - Parameters:
-     - json: The serialized JSON data. [String:Any]
-     - requestUrl: The URL used to make the request. Can be used in a Switch statement to handle multiple requests from the same requesting context.
+       - json: The serialized JSON data. [String:Any]
+       - requestUrl: The URL used to make the request. Can be used in a Switch statement to handle multiple requests from the same requesting context.
      - Author: Mark Filter
      */
     @objc optional func fetchJSONComplete(json: [String:Any], requestUrl: URL)
@@ -181,8 +182,8 @@ class NetworkUtils {
     /**
      Returns a UImage object from hte requested URL address.
      - Parameters:
-     - image: The UIImage initialized from the returned Data.
-     - requestUrl: The URL used to make the request. Can be used in a Switch statement to handle multiple requests from the same requesting context.
+       - image: The UIImage initialized from the returned Data.
+       - requestUrl: The URL used to make the request. Can be used in a Switch statement to handle multiple requests from the same requesting context.
      - Author: Mark Filter
      */
     @objc optional func fetchImageComplete(image: UIImage, requestedUrl: URL)

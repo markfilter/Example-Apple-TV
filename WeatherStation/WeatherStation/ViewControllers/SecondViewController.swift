@@ -17,10 +17,9 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet var labelTitle: UILabel!
     @IBOutlet var labelForecast: UILabel!
     var selectedRow : Int = 0
-    
-    
     var forecastData : [(title: String, forecast: String, icon: String)] = [(title: String, forecast: String, icon: String)]()
 
+    
     // Mark: View Controller Life Cycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,8 +60,8 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.loadImage(at: selectedRow)
     }
     
-    // Mark: - Custom Methods
     
+    // Mark: - Custom Methods
     
     func loadImage(at row: Int) {
         let forecastImageUrl = forecastData[row].icon
@@ -77,6 +76,7 @@ class SecondViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
     }
 
+    // MARK: - NetworkUtilsRESTDelegate Callbacks
     
     func fetchImageComplete(image: UIImage, requestedUrl: URL) {
         DispatchQueue.main.async {

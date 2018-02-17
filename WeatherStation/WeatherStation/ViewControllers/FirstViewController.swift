@@ -99,6 +99,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         labelTemp.text = ""
     }
     
+    
     func fetchCitiesInFlorida(state: String) {
         requestedURL = URL.init(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state).json")
         if let url = requestedURL {
@@ -121,6 +122,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
     }
     
+    
     func loadTableViewWithCities(cityData: [String: Any]) {
         if let responseContents = cityData["response"] as? [String : Any] {
             if let results = responseContents["results"] as? [[String:Any]] {
@@ -142,11 +144,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         }
     }
     
-    
-    
-    
-    
-    
+
     func updateUI(weatherData : [String: Any], city: String, state: String) {
         labelStaticDay.alpha = 1.0
         labelStaticWeather.alpha = 1.0
@@ -198,6 +196,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
 }
 
+// MARK: - UITextFieldDelegate Extension
 extension FirstViewController : UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         Log.i(TAG: TAG, message: "textFieldShouldReturn")
@@ -213,6 +212,7 @@ extension FirstViewController : UITextFieldDelegate {
     }
 }
 
+// MARK: - NetworkUtilsRESTDelegate Extension
 extension FirstViewController : NetworkUtilsRESTDelegate {
     
     func fetchJSONComplete(json: [String : Any], requestUrl: URL) {
@@ -231,6 +231,5 @@ extension FirstViewController : NetworkUtilsRESTDelegate {
         }
         
     }
-    
     
 }
