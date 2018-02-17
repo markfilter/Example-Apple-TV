@@ -1,5 +1,5 @@
 //
-//  ConsoleUtils.swift
+//  AppConstants.swift
 //  WeatherStation
 //
 //  Created by Mark Filter on 2/16/18.
@@ -19,30 +19,10 @@
 //  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 import Foundation
 
-class Log {
-    
-    /**
-     Displays informative output to the console.
-     - Parameters:
-       - TAG: The filter TAG to be used to isolate the textual information.
-       - message: The message to be displayed in the console.
-     - Author: Mark Filter
-     */
-    internal static func i(TAG: String, message: String) {
-        print("i: ", TAG, ": ", message)
-    }
-    
-    /**
-     Displays debug output to the console.
-     - Parameters:
-       - TAG: The filter TAG to be used to isolate the textual information.
-       - message: The message to be displayed in the console.
-     - Author: Mark Filter
-     */
-    internal static func d(TAG: String, message: String) {
-        print("d: ", TAG, ": ", message)
-    }
-    
+internal class AppConstants {
+    internal static let TABLE_VIEW_REUSE_ID_VC1 : String = "weatherstation_TABLE_VIEW_REUSE_ID_VC1"
+    internal static let TABLE_VIEW_REUSE_ID_VC2 : String = "weatherstation_TABLE_VIEW_REUSE_ID_VC2"
 }

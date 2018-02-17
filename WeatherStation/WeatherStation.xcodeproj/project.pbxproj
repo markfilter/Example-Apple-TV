@@ -15,8 +15,6 @@
 		71BA2F272037A74A00B13833 /* WeatherStationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F262037A74A00B13833 /* WeatherStationTests.swift */; };
 		71BA2F322037A74A00B13833 /* WeatherStationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F312037A74A00B13833 /* WeatherStationUITests.swift */; };
 		71BA2F432037AD1800B13833 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F422037AD1800B13833 /* AppConstants.swift */; };
-		71BA2F442037AD1800B13833 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F422037AD1800B13833 /* AppConstants.swift */; };
-		71BA2F452037AD1800B13833 /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F422037AD1800B13833 /* AppConstants.swift */; };
 		71BA2F472037AF0100B13833 /* ConsoleUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F462037AF0100B13833 /* ConsoleUtils.swift */; };
 		71BA2F482037AF0100B13833 /* ConsoleUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F462037AF0100B13833 /* ConsoleUtils.swift */; };
 		71BA2F492037AF0100B13833 /* ConsoleUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F462037AF0100B13833 /* ConsoleUtils.swift */; };
@@ -115,7 +113,6 @@
 				71BA2F182037A74900B13833 /* Main.storyboard */,
 				71BA2F1B2037A74900B13833 /* Assets.xcassets */,
 				71BA2F1D2037A74900B13833 /* Info.plist */,
-				71BA2F422037AD1800B13833 /* AppConstants.swift */,
 			);
 			path = WeatherStation;
 			sourceTree = "<group>";
@@ -151,6 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				71BA2F122037A74900B13833 /* AppDelegate.swift */,
+				71BA2F422037AD1800B13833 /* AppConstants.swift */,
 			);
 			path = AppDelegate;
 			sourceTree = "<group>";
@@ -313,7 +311,6 @@
 				71BA2F4D203880C600B13833 /* NetworkUtils.swift in Sources */,
 				71BA2F482037AF0100B13833 /* ConsoleUtils.swift in Sources */,
 				71BA2F272037A74A00B13833 /* WeatherStationTests.swift in Sources */,
-				71BA2F442037AD1800B13833 /* AppConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,7 +321,6 @@
 				71BA2F4E203880C600B13833 /* NetworkUtils.swift in Sources */,
 				71BA2F492037AF0100B13833 /* ConsoleUtils.swift in Sources */,
 				71BA2F322037A74A00B13833 /* WeatherStationUITests.swift in Sources */,
-				71BA2F452037AD1800B13833 /* AppConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
