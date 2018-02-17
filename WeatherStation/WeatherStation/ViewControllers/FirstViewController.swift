@@ -16,7 +16,8 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet var labelCityName: UILabel!
     @IBOutlet var labelTemp: UILabel!
     @IBOutlet var labelWeather: UILabel!
-    var cities = ["Austin","Dallas","Phoenix", "Portand", "San Diego"]
+    let state = "FL"
+    var cities = ["Orlando","Jacksonville","Naples", "Miami", "Tampa"]
     
     
     // Mark: - View Controller Life Cycle Methods
@@ -54,11 +55,36 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     // Mark: - TableView Delegate Callback Methods
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let row = indexPath.row
-        self.getWeatherData(city: cities[row])
+        self.getWeatherData(state: state, city: cities[row])
     }
     
-    func getWeatherData(city: String) {
-        Log.i(TAG: TAG, message: "City = \(city)")
+    func getWeatherData(state: String, city: String) {
+        Log.i(TAG: TAG, message: "City = \(city), \(state)")
+        if let cityString: String = city.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
+            if let url = URL(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state)/\(cityString)") {
+                let getData = URLSession.shared.dataTask(with: url) {
+                    (opt_data, opt_response, opt_error) in
+                    if let error = opt_error {
+                        Log.d(TAG: self.TAG, message: error.localizedDescription)
+                        return
+                    }
+                    
+                    if let data = opt_data {
+                        DispatchQueue.main.async {
+                            self.updateUI(weatherData: data)
+                        }
+                    }
+                    
+                }
+                getData.resume()
+            }
+            
+        }
+        
+    }
+    
+    func updateUI(weatherData : Data) {
+        Log.i(TAG: TAG, message: String.init(describing: weatherData))
     }
 }
 
