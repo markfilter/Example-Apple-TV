@@ -20,6 +20,9 @@
 		71BA2F472037AF0100B13833 /* ConsoleUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F462037AF0100B13833 /* ConsoleUtils.swift */; };
 		71BA2F482037AF0100B13833 /* ConsoleUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F462037AF0100B13833 /* ConsoleUtils.swift */; };
 		71BA2F492037AF0100B13833 /* ConsoleUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F462037AF0100B13833 /* ConsoleUtils.swift */; };
+		71BA2F4C203880C600B13833 /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F4B203880C600B13833 /* NetworkUtils.swift */; };
+		71BA2F4D203880C600B13833 /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F4B203880C600B13833 /* NetworkUtils.swift */; };
+		71BA2F4E203880C600B13833 /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71BA2F4B203880C600B13833 /* NetworkUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +58,7 @@
 		71BA2F332037A74A00B13833 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		71BA2F422037AD1800B13833 /* AppConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
 		71BA2F462037AF0100B13833 /* ConsoleUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsoleUtils.swift; sourceTree = "<group>"; };
+		71BA2F4B203880C600B13833 /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				71BA2F462037AF0100B13833 /* ConsoleUtils.swift */,
+				71BA2F4B203880C600B13833 /* NetworkUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -296,6 +301,7 @@
 				71BA2F132037A74900B13833 /* AppDelegate.swift in Sources */,
 				71BA2F152037A74900B13833 /* FirstViewController.swift in Sources */,
 				71BA2F472037AF0100B13833 /* ConsoleUtils.swift in Sources */,
+				71BA2F4C203880C600B13833 /* NetworkUtils.swift in Sources */,
 				71BA2F432037AD1800B13833 /* AppConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -304,6 +310,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71BA2F4D203880C600B13833 /* NetworkUtils.swift in Sources */,
 				71BA2F482037AF0100B13833 /* ConsoleUtils.swift in Sources */,
 				71BA2F272037A74A00B13833 /* WeatherStationTests.swift in Sources */,
 				71BA2F442037AD1800B13833 /* AppConstants.swift in Sources */,
@@ -314,6 +321,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				71BA2F4E203880C600B13833 /* NetworkUtils.swift in Sources */,
 				71BA2F492037AF0100B13833 /* ConsoleUtils.swift in Sources */,
 				71BA2F322037A74A00B13833 /* WeatherStationUITests.swift in Sources */,
 				71BA2F452037AD1800B13833 /* AppConstants.swift in Sources */,

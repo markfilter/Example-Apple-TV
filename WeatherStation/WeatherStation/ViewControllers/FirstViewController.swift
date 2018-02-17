@@ -21,6 +21,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     var cities : [String] = []
     var weatherImageUrl : String = ""
     var forecastData : [(title: String, forecast: String, icon: String)] = [(title: String, forecast: String, icon: String)]()
+//    var reachability: Reachability? = Reachability.networkReachabilityForInternetConnection()
     
     
     // Mark: - View Controller Life Cycle Methods
@@ -36,6 +37,13 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         clearUILabels()
         cities.removeAll()
         tableView.reloadData()
+        
+        
+        
+//        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityDidChange(_:)), name: NSNotification.Name(rawValue: ReachabilityDidChangeNotificationName), object: nil)
+//        _ = reachability?.startNotifier()
+        
+        
         state = "FL"
         textFieldStateToSearch.text = "FL"
         fetchCitiesInFlorida(state: "FL")
@@ -44,6 +52,12 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
             tabBarController.delegate = self
         }
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        NetworkUtils.checkConnection(viewController: self, testValue: false)
+    }
+    
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -183,6 +197,10 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
+    
+    
+    
+    
     func updateUI(weatherData : [String: Any], city: String, state: String) {
             
         if let outerForecastData = weatherData["forecast"] as? [String : Any] {
@@ -197,9 +215,9 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
                             if let forcastString = forecastForToday["fcttext"] as? String, let tempString = forecastForToday["title"] as? String, let iconUrlString = forecastForToday["icon_url"] as? String {
                                 self.forecastData.append((title: tempString, forecast: forcastString, icon: iconUrlString))
                                 self.labelCityName.text = "\(city), \(state)"
-                                self.labelWeather.text = forcastString
-                                self.labelTemp.text = tempString
-                                self.weatherImageUrl = iconUrlString
+                                self.labelWeather.text = forecastData[0].forecast
+                                self.labelTemp.text = forecastData[0].title
+                                self.weatherImageUrl = forecastData[0].icon
                             }
                             else {
                                 Log.d(TAG: TAG, message: "There was an error getting weather data for \(city), \(state)")
