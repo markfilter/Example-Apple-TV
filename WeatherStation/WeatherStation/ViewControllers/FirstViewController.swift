@@ -55,7 +55,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
     override func viewDidAppear(_ animated: Bool) {
         // Verify Network Connection
-        NetworkUtils.checkConnection(viewController: self, testValue: false)
+        NetworkUtils.checkConnection(viewController: self)
     }
 
     override func didReceiveMemoryWarning() {

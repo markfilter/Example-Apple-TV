@@ -15,8 +15,13 @@ class NetworkUtils {
     internal static let TAG : String = "NetworkUtils.TAG"
     static let opt_url : URL? = URL.init(string: "https://api.wunderground.com/")
 
-    
-    internal static func checkConnection(viewController: UIViewController, testValue: Bool) {
+    /**
+     Checks network connectivity by making a request to the domain's server. Handles alerting the user to connection issues.
+     - Parameters:
+     - viewController: The calling ViewController.
+     - Author: Mark Filter
+     */
+    internal static func checkConnection(viewController: UIViewController) {
 
         var errorMessage = ""
         
@@ -47,8 +52,6 @@ class NetworkUtils {
                 return
             }
             
-            
-            
             switch httpResponse.statusCode {
                 case 200:
                     break
@@ -58,14 +61,19 @@ class NetworkUtils {
                     self.displayErrorMessage(viewController: viewController, title: "No Internet Connection", errorMessage: "Please check your internet connection and try again.")
             }
             
-            
         }
         getData.resume()
         
-        
     }
     
-    
+    /**
+     Displays an error message in an AlertController.
+     - Parameters:
+     - viewController: The ViewController presenting the AlertController.
+     - title: The title of the message
+     - errorMessage: The message to display to the user that defines the error.
+     - Author: Mark Filter
+     */
     internal static func displayErrorMessage(viewController: UIViewController, title: String, errorMessage: String) {
         
         let alertController: UIAlertController = UIAlertController(title: title, message: errorMessage, preferredStyle: UIAlertControllerStyle.alert)
@@ -74,6 +82,13 @@ class NetworkUtils {
         
     }
     
+    /**
+     Fetches JSON from the requested URL and returns the JSON via the delegate method.
+     - Parameters:
+     - requestUrl: The URL of the request.
+     - delegate: The context registered for receiving callbacks.
+     - Author: Mark Filter
+     */
     internal static func fetchJSONFrom(requestUrl: URL, delegate: NetworkUtilsRESTDelegate) {
         
         let getData = URLSession.shared.dataTask(with: requestUrl) {
@@ -103,6 +118,14 @@ class NetworkUtils {
         
     }
     
+    
+    /**
+     Fetches Image data from the requested URL and returns the UIImage via the delegate method.
+     - Parameters:
+     - requestUrl: The URL of the request.
+     - delegate: The context registered for receiving callbacks.
+     - Author: Mark Filter
+     */
     internal static func fetchImageFrom(url: URL, delegate: NetworkUtilsRESTDelegate) {
         var secureURL : URL = url
         if url.scheme == "http" {
@@ -112,8 +135,6 @@ class NetworkUtils {
             let secureURLString : String = "https://" + url.host! + "/" + url.relativePath
             secureURL = URL.init(string: secureURLString)!
         }
-        
-        
         
         let getData = URLSession.shared.dataTask(with: secureURL, completionHandler: { (opt_data, opt_response, opt_error) in
             
@@ -142,8 +163,28 @@ class NetworkUtils {
     
 }
 
+
+/**
+ This protocol is for returning Network RESTful GET, POST, PUT, and DELETE calls made by the conforming entity.
+ - Author: Mark Filter
+ */
 @objc internal protocol NetworkUtilsRESTDelegate {
+    /**
+     Returns a dictionary object of serialized JSON data of type [String: Any].
+     - Parameters:
+     - json: The serialized JSON data. [String:Any]
+     - requestUrl: The URL used to make the request. Can be used in a Switch statement to handle multiple requests from the same requesting context.
+     - Author: Mark Filter
+     */
     @objc optional func fetchJSONComplete(json: [String:Any], requestUrl: URL)
+    
+    /**
+     Returns a UImage object from hte requested URL address.
+     - Parameters:
+     - image: The UIImage initialized from the returned Data.
+     - requestUrl: The URL used to make the request. Can be used in a Switch statement to handle multiple requests from the same requesting context.
+     - Author: Mark Filter
+     */
     @objc optional func fetchImageComplete(image: UIImage, requestedUrl: URL)
 }
 
