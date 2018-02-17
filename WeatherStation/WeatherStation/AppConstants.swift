@@ -10,4 +10,5 @@ import Foundation
 
 internal class AppConstants {
     internal static let TABLE_VIEW_REUSE_ID_VC1 : String = "weatherstation_TABLE_VIEW_REUSE_ID_VC1"
+    internal static let TABLE_VIEW_REUSE_ID_VC2 : String = "weatherstation_TABLE_VIEW_REUSE_ID_VC2"
 }

@@ -8,33 +8,48 @@
 
 import UIKit
 
-class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITabBarControllerDelegate {
 
     // Mark: - Outlets & Variables
     public let TAG: String = "FirstViewController.TAG"
-    @IBOutlet var tableView: UITableView!
-    @IBOutlet var labelCityName: UILabel!
-    @IBOutlet var labelTemp: UILabel!
-    @IBOutlet var labelWeather: UILabel!
-    @IBOutlet var textFieldStateToSearch: UITextField!
-    var state = ""
+    @IBOutlet var tableView : UITableView!
+    @IBOutlet var labelCityName : UILabel!
+    @IBOutlet var labelTemp : UILabel!
+    @IBOutlet var labelWeather : UILabel!
+    @IBOutlet var textFieldStateToSearch : UITextField!
+    var state : String = ""
     var cities : [String] = []
+    var weatherImageUrl : String = ""
+    var forecastData : [(title: String, forecast: String, icon: String)] = [(title: String, forecast: String, icon: String)]()
     
     
     // Mark: - View Controller Life Cycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
         // Setup
+        title = "Cities"
+        if let tabBarController = self.tabBarController {
+            tabBarController.viewControllers![1].title = "Forecast Details"
+        }
         tableView.delegate = self
         tableView.dataSource = self
         clearUILabels()
+        cities.removeAll()
+        tableView.reloadData()
+        state = "FL"
+        textFieldStateToSearch.text = "FL"
         fetchCitiesInFlorida(state: "FL")
+        
+        if let tabBarController = self.tabBarController {
+            tabBarController.delegate = self
+        }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+
     
     // Mark: - TableView Data Source Callback Methods
     
@@ -175,22 +190,26 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
             if let txt_forecast = outerForecastData["txt_forecast"] as? [String : Any] {
                 
                 if let forecastday = txt_forecast["forecastday"] as? [Any] {
-                    
-                    if let forecastForToday = forecastday[0] as? [String: Any] {
-                        Log.i(TAG: TAG, message: forecastForToday.description)
-                        if let forcastString = forecastForToday["fcttext"] as? String, let tempString = forecastForToday["title"] as? String {
-                            self.labelCityName.text = "\(city), \(state)"
-                            self.labelWeather.text = forcastString
-                            self.labelTemp.text = tempString
+                    for index in 0..<forecastday.count {
+                        
+                        if let forecastForToday = forecastday[index] as? [String: Any] {
+                            
+                            if let forcastString = forecastForToday["fcttext"] as? String, let tempString = forecastForToday["title"] as? String, let iconUrlString = forecastForToday["icon_url"] as? String {
+                                self.forecastData.append((title: tempString, forecast: forcastString, icon: iconUrlString))
+                                self.labelCityName.text = "\(city), \(state)"
+                                self.labelWeather.text = forcastString
+                                self.labelTemp.text = tempString
+                                self.weatherImageUrl = iconUrlString
+                            }
+                            else {
+                                Log.d(TAG: TAG, message: "There was an error getting weather data for \(city), \(state)")
+                            }
                         }
                         else {
-                            Log.d(TAG: TAG, message: "There was an error getting weather data for \(city), \(state)")
+                            Log.i(TAG: TAG, message: "Could not find object for key forecastday[0]")
                         }
                     }
-                    else {
-                        Log.i(TAG: TAG, message: "Could not find object for key forecastday[0]")
-                    }
-                    
+                
                 }
                 else {
                     Log.i(TAG: TAG, message: "Could not find object for key forecastday")
@@ -201,7 +220,17 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
             }
         }
         
+        if self.forecastData.count != 0 {
+            if let tabBarController = self.tabBarController {
+                if (tabBarController.viewControllers != nil) && (tabBarController.viewControllers!.count > 1) {
+                    if let secondViewController = tabBarController.viewControllers![1] as? SecondViewController {
+                        secondViewController.forecastData = self.forecastData
+                    }
+                }
+            }
+        }
     }
+    
 }
 
 extension FirstViewController : UITextFieldDelegate {
