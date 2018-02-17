@@ -17,7 +17,7 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
     @IBOutlet var labelTemp: UILabel!
     @IBOutlet var labelWeather: UILabel!
     let state = "FL"
-    var cities = ["Orlando","Jacksonville","Naples", "Miami", "Tampa"]
+    var cities : [String] = []
     
     
     // Mark: - View Controller Life Cycle Methods
@@ -26,6 +26,8 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         // Setup
         tableView.delegate = self
         tableView.dataSource = self
+        clearUILabels()
+        fetchCitiesInFlorida(state: "FL")
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,10 +60,56 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         self.getWeatherData(state: state, city: cities[row])
     }
     
+    // Mark: - Custom Methods
+    func clearUILabels() {
+        labelCityName.text = ""
+        labelWeather.text = ""
+        labelTemp.text = ""
+    }
+    
+    func fetchCitiesInFlorida(state: String) {
+        
+        if let url = URL(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state).json") {
+            let getData = URLSession.shared.dataTask(with: url) {
+                (opt_data, opt_response, opt_error) in
+                if let error = opt_error {
+                    Log.d(TAG: self.TAG, message: error.localizedDescription)
+                    return
+                }
+                guard let httpResponse = opt_response as? HTTPURLResponse,
+                    httpResponse.statusCode == 200,
+                    let validData = opt_data
+                    else { print("JSON Object Creation Failed"); return }
+                do {
+                    
+                    if let jsonObj = try JSONSerialization.jsonObject(with: validData, options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any] {
+                        
+                        DispatchQueue.main.async {
+                            self.loadTableViewWithCities(cityData: jsonObj)
+                        }
+                        
+                    }
+                    else {
+                        Log.d(TAG: self.TAG, message: "error creating jsonObj")
+                    }
+                    
+                }
+                catch { print(error.localizedDescription) }
+                
+            }
+            getData.resume()
+        }
+        else {
+            Log.d(TAG: TAG, message: "Error creating state url in method: fetchCitiesInFlorid(state: String)")
+        }
+    }
+    
+    
     func getWeatherData(state: String, city: String) {
         Log.i(TAG: TAG, message: "City = \(city), \(state)")
         if let cityString: String = city.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed) {
-            if let url = URL(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state)/\(cityString)") {
+            if let url = URL(string: "https://api.wunderground.com/api/d2e77b807eb40e20/forecast/q/\(state)/\(cityString).json") {
+                
                 let getData = URLSession.shared.dataTask(with: url) {
                     (opt_data, opt_response, opt_error) in
                     if let error = opt_error {
@@ -69,11 +117,25 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
                         return
                     }
                     
-                    if let data = opt_data {
-                        DispatchQueue.main.async {
-                            self.updateUI(weatherData: data)
+                    guard let httpResponse = opt_response as? HTTPURLResponse,
+                        httpResponse.statusCode == 200,
+                        let validData = opt_data
+                        else { print("JSON Object Creation Failed"); return }
+                    do {
+                        
+                        if let jsonObj = try JSONSerialization.jsonObject(with: validData, options: JSONSerialization.ReadingOptions.mutableContainers) as? [String:Any] {
+                            
+                            DispatchQueue.main.async {
+                                self.updateUI(weatherData: jsonObj, city: city, state: state)
+                            }
+                            
                         }
+                        else {
+                            Log.d(TAG: self.TAG, message: "error creating jsonObj")
+                        }
+
                     }
+                    catch { print(error.localizedDescription) }
                     
                 }
                 getData.resume()
@@ -83,8 +145,60 @@ class FirstViewController: UIViewController, UITableViewDelegate, UITableViewDat
         
     }
     
-    func updateUI(weatherData : Data) {
-        Log.i(TAG: TAG, message: String.init(describing: weatherData))
+    func loadTableViewWithCities(cityData: [String: Any]) {
+        if let responseContents = cityData["response"] as? [String : Any] {
+            if let results = responseContents["results"] as? [[String:Any]] {
+                self.cities.removeAll()
+                for index in 0..<results.count {
+                    if let cityName = results[index]["city"] as? String {
+                        self.cities.append(cityName)
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            } else {
+                Log.d(TAG: TAG, message: "Error getting data from cityData[\"response\"] in func loadTableViewWithCities(cityData: [String: Any])")
+            }
+        } else {
+            Log.d(TAG: TAG, message: "Error getting data from weatherData[\"forecast\"] in func loadTableViewWithCities(cityData: [String: Any])")
+        }
+    }
+    
+    func updateUI(weatherData : [String: Any], city: String, state: String) {
+            
+        if let outerForecastData = weatherData["forecast"] as? [String : Any] {
+            
+            if let txt_forecast = outerForecastData["txt_forecast"] as? [String : Any] {
+                
+                if let forecastday = txt_forecast["forecastday"] as? [Any] {
+                    
+                    if let forecastForToday = forecastday[0] as? [String: Any] {
+                        Log.i(TAG: TAG, message: forecastForToday.description)
+                        if let forcastString = forecastForToday["fcttext"] as? String, let tempString = forecastForToday["title"] as? String {
+                            self.labelCityName.text = "\(city), \(state)"
+                            self.labelWeather.text = forcastString
+                            self.labelTemp.text = tempString
+                        }
+                        else {
+                            Log.d(TAG: TAG, message: "There was an error getting weather data for \(city), \(state)")
+                        }
+                    }
+                    else {
+                        Log.i(TAG: TAG, message: "Could not find object for key forecastday[0]")
+                    }
+                    
+                }
+                else {
+                    Log.i(TAG: TAG, message: "Could not find object for key forecastday")
+                }
+            }
+            else {
+                Log.i(TAG: TAG, message: "Could not find object for key txt_forecast")
+            }
+        }
+        
     }
 }
 
